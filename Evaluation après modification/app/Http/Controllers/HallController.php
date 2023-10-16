@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Hall;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HallController extends Controller
 {
@@ -15,26 +16,45 @@ class HallController extends Controller
 
     public function create()
     {
-        return view('halls.create');
+        return view('hall.create');
     }
 
     public function store(Request $request)
     {
-        // Valider et enregistrer le nouveau hall
+        $data = $request->all();
+
+        DB::table('halls')->insert([
+            'nom' => $data['nom'],
+            'personnel_minimum' => $data['personnel_minimum'],
+        ]);
+
+        return redirect()->route('hall.index');
     }
 
     public function edit(Hall $hall)
     {
-        return view('halls.edit', compact('hall'));
+        return view('hall.edit', compact('hall'));
     }
 
     public function update(Request $request, Hall $hall)
     {
-        // Valider et mettre à jour le hall
+        $data = $request->all();
+
+        DB::table('halls')
+            ->where('id', $hall->id)
+            ->update([
+                'nom' => $data['nom'],
+                'personnel_minimum' => $data['personnel_minimum'],
+            ]);
+
+
+        return redirect()->route('hall.index');
     }
 
     public function destroy(Hall $hall)
     {
-        // Supprimer le hall
+        $hall->delete();
+
+        return redirect()->route('hall.index');
     }
 }

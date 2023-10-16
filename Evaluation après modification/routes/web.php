@@ -46,7 +46,6 @@ use app\Http\Controllers;
 Route::resource('terminal', TerminalController::class);
 Route::resource('porte-embarquement', PorteEmbarquementController::class);
 
-
 Route::get('/', [TerminalController::class,'liste'])->name('accueil');
 
 //Route::get('/', [TerminalController::class, 'index']);
@@ -59,6 +58,11 @@ Route::post('/portes-embarquement/create', 'PorteEmbarquementController@create')
 
 
 
+
+
   Route::get('/profile', [PorteEmbarquementController::class, 'edit'])->name('profile.edit');
   Route::patch('/profile', [PorteEmbarquementController::class, 'update'])->name('profile.update');
-  Route::delete('/profile', [PorteEmbarquementController::class, 'destroy'])->name('profile.destroy');
+  Route::delete('/pro<file', [PorteEmbarquementController::class, 'destroy'])->name('profile.destroy');
+  Route::get('/porte-embarquement/{porteEmbarquement}/edit', 'PorteEmbarquementController@edit')->name('porte-embarquement.edit');
+  Route::get('/porte-embarquement/{porteEmbarquement}', 'PorteEmbarquementController@show');
+

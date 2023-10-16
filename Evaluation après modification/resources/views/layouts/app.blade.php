@@ -13,6 +13,8 @@
 </head>
 
 <body>
+
+
   <div class="container">
     <nav class="pb-5">
       <a href="{{ route('hall.index') }}">Liste des halls</a>

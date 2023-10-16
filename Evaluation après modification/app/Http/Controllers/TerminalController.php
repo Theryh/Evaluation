@@ -5,17 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Terminal;
 use Illuminate\Http\Request;
 use App\Models\PorteEmbarquement;
+use Illuminate\Support\Facades\DB;
 
 class TerminalController extends Controller
 {
 
     public function liste()
     {
-        $terminals = Terminal::withCount('halls')->get();
+        $terminals = Terminal::all();
 
-        $capaciteTotale = PorteEmbarquement::where('est_ouverte', true)->sum('capacite_maximale');
-
-        return view('liste', compact('terminals', 'capaciteTotale'));
+        return view('terminal.index', compact('terminals'));
     }
     public function index()
     {
@@ -30,7 +29,17 @@ class TerminalController extends Controller
 
     public function store(Request $request)
     {
-        // Valider et enregistrer le nouveau terminal
+        $data = $request->all();
+
+
+        DB::table('terminals')->insert([
+            'nom' => $data['nom'],
+            'emplacement' => $data['emplacement'],
+            'date_mise_en_service' => $data['date_mise_en_service'],
+
+        ]);
+
+        return redirect()->route('terminal.index');
     }
 
     public function edit(Terminal $terminal)
@@ -40,11 +49,23 @@ class TerminalController extends Controller
 
     public function update(Request $request, Terminal $terminal)
     {
-        // Valider et mettre à jour le terminal
+        $data = $request->all();
+
+        DB::table('terminals')
+            ->where('id', $terminal->id)
+            ->update([
+                'nom' => $data['nom'],
+                'emplacement' => $data['emplacement'],
+                'date_mise_en_service' => $data['date_mise_en_service'],
+            ]);
+
+        return redirect()->route('terminal.index');
     }
 
     public function destroy(Terminal $terminal)
     {
-        // Supprimer le terminal
+        $terminal->delete();
+
+        return redirect()->route('terminal.index');
     }
 }

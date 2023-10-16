@@ -20,12 +20,17 @@ class PorteEmbarquementController extends Controller
         return view('porte-embarquement.create');
     }
 
+    public function edit(PorteEmbarquement $porteEmbarquement)
+{
+    return view('porte-embarquement.edit', compact('porteEmbarquement'));
+}
+
     public function store(Request $request)
     {
         $data = $request->all();
 
-        // Convertir la valeur 'est_ouverte' en un vrai booléen
-        $estOuverte = $data['est_ouverte'] == 'ON' ? true : false;
+
+        $estOuverte = isset($data['est_ouverte']) && $data['est_ouverte'] == 'on' ? 1 : 0;
 
         DB::table('porte_embarquements')->insert([
             'nom' => $data['nom'],
@@ -36,18 +41,24 @@ class PorteEmbarquementController extends Controller
         return redirect()->route('porte-embarquement.index');
     }
 
-    public function update(Request $request, PorteEmbarquement $porteEmbarquement)
-    {
-        $data = $request->validate([
-            'nom' => 'required|string',
-            'est_ouverte' => 'required|boolean',
-            'capacite_maximale' => 'required|integer',
-       ]);
+public function update(Request $request, PorteEmbarquement $porteEmbarquement)
+{
+    $data = $request->all();
 
-        $porteEmbarquement->update($data);
+    $estOuverte = isset($data['est_ouverte']) && $data['est_ouverte'] == 'on' ? 1 : 0;
 
-        return redirect()->route('porte-embarquement.index');
-    }
+    DB::table('porte_embarquements')
+        ->where('id', $porteEmbarquement->id)
+        ->update([
+            'nom' => $data['nom'],
+            'est_ouverte' => $estOuverte,
+            'capacite_maximale' => $data['capacite_maximale'],
+        ]);
+
+
+    return redirect()->route('porte-embarquement.index');
+}
+
 
     public function destroy(PorteEmbarquement $porteEmbarquement)
     {
